@@ -113,7 +113,8 @@ var Tester = function Tester(casper, options) {
             failure.message  || failure.standard,
             failure.standard || "test failed",
             failure.type     || "unknown",
-            (timeElapsed - this.lastAssertTime)
+            (timeElapsed - this.lastAssertTime),
+            failure.link || null
         );
         this.lastAssertTime = timeElapsed;
         this.testResults.failures.push(failure);
@@ -209,11 +210,13 @@ Tester.prototype.assert = Tester.prototype.assertTrue = function assert(subject,
  * @param  String  message   Test description (Optional)
  * @return Object            An assertion result object
  */
-Tester.prototype.assertEquals = Tester.prototype.assertEqual = function assertEquals(subject, expected, message) {
+Tester.prototype.assertEquals = Tester.prototype.assertEqual = function assertEquals(subject, expected, label, message, link) {
     "use strict";
-    return this.assert(this.testEquals(subject, expected), message, {
+
+    return this.assert(this.testEquals(subject, expected), label, {
         type:     "assertEquals",
-        standard: "Subject equals the expected value",
+        standard: message || "Subject equals the expected value",
+        link: link || null,
         values:  {
             subject:  subject,
             expected: expected

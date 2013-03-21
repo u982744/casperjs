@@ -115,7 +115,7 @@ XUnitExporter.prototype.addSuccess = function addSuccess(classname, name, durati
  * @param  String  type
  * @param  Number  duration  Test duration in milliseconds
  */
-XUnitExporter.prototype.addFailure = function addFailure(classname, name, message, type, duration) {
+XUnitExporter.prototype.addFailure = function addFailure(classname, name, message, type, duration, link) {
     "use strict";
     var fnode = utils.node('testcase', {
         classname: generateClassName(classname),
@@ -127,7 +127,26 @@ XUnitExporter.prototype.addFailure = function addFailure(classname, name, messag
     var failure = utils.node('failure', {
         type: type || "unknown"
     });
-    failure.appendChild(document.createTextNode(message || "no message left"));
+
+
+    // WIP !!!
+    if (link) {
+        var link = utils.node("a", {
+            href: link
+        });
+
+        link.appendChild(document.createTextNode(message));
+        //failure.appendChild(link);
+
+        var newXMLData = document.implementation.createDocument(null, 'Site', null);
+
+        var cdata = newXMLData.createCDATASection('<a href="http://www.google.com.au/test.html">click here</a>');
+
+        failure.appendChild(cdata);
+    } else {
+        failure.appendChild(document.createTextNode(message || "no message left"));
+    }
+
     fnode.appendChild(failure);
     this._xml.appendChild(fnode);
 };
